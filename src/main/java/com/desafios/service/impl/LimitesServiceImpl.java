@@ -68,4 +68,9 @@ public class LimitesServiceImpl implements LimitesService {
 		return null;
 	}
 
+	@Override
+	public void deleteLimite(Long id) {
+		repository.deleteById(id);
+	}
+
 }

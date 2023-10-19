@@ -17,4 +17,6 @@ public interface LimitesService {
 	List<LimiteResponseDTO> findAll();
 
 	LimiteResponseDTO updateLimite(Long id, LimiteRequestDTO request);
+
+	void deleteLimite(Long id);
 }
