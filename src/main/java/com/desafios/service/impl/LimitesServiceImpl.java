@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.desafios.entity.Limite;
@@ -17,10 +18,12 @@ import com.desafios.service.LimitesService;
 public class LimitesServiceImpl implements LimitesService {
 
 	private final LimitesRepository repository;
+	private final PasswordEncoder encoder;
 
 	@Autowired
-	public LimitesServiceImpl(LimitesRepository repository) {
+	public LimitesServiceImpl(LimitesRepository repository, PasswordEncoder encoder) {
 		this.repository = repository;
+		this.encoder = encoder;
 	}
 
 	@Override
@@ -36,8 +39,14 @@ public class LimitesServiceImpl implements LimitesService {
 	@Override
 	public LimiteResponseDTO createLimite(LimiteRequestDTO request) {
 		Limite limiteNovo = LimiteMapper.limiteRequestToLimite(request);
+		encriptaDados(limiteNovo);
 		repository.save(limiteNovo);
 		return LimiteMapper.limiteToLimiteResponse(limiteNovo);
+	}
+
+	private void encriptaDados(Limite limiteNovo) {
+		limiteNovo.setCreditCardToken(encoder.encode(limiteNovo.getCreditCardToken()));
+		limiteNovo.setUserDocument(encoder.encode(limiteNovo.getUserDocument()));
 	}
 
 	@Override
@@ -53,6 +62,7 @@ public class LimitesServiceImpl implements LimitesService {
 		Optional<Limite> idProcurado = Optional.of(findLimiteById(id));
 		if (requestRecebida.isPresent()) {
 			Limite objetoLimite = idProcurado.get();
+			encriptaDados(objetoLimite);
 			if (objetoRecedibo.getCreditCardToken() != null) {
 				objetoLimite.setCreditCardToken(requestRecebida.get().getCreditCardToken());
 			}
