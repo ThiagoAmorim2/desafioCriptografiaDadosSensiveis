@@ -11,6 +11,7 @@ import com.desafios.model.dto.request.LimiteRequestDTO;
 import com.desafios.model.dto.response.LimiteResponseDTO;
 import com.desafios.model.mapper.LimiteMapper;
 import com.desafios.repository.LimitesRepository;
+import com.desafios.security.Crypto;
 import com.desafios.service.LimitesService;
 
 @Service
@@ -34,10 +35,29 @@ public class LimitesServiceImpl implements LimitesService {
 	}
 
 	@Override
-	public LimiteResponseDTO createLimite(LimiteRequestDTO request) {
+	public LimiteResponseDTO createLimite(LimiteRequestDTO request) throws Exception {
 		Limite limiteNovo = LimiteMapper.limiteRequestToLimite(request);
+		encriptografarDados(limiteNovo);
 		repository.save(limiteNovo);
 		return LimiteMapper.limiteToLimiteResponse(limiteNovo);
+	}
+
+	private void encriptografarDados(Limite limiteNovo) throws Exception {
+		String creditCardToken = limiteNovo.getCreditCardToken();
+		limiteNovo.setCreditCardToken(Crypto.sha512(creditCardToken));
+		String userDocument = limiteNovo.getCreditCardToken();
+		limiteNovo.setUserDocument(Crypto.sha512(userDocument));
+	}
+
+	private void encriptografarDadosLimiteRequestDTO(LimiteRequestDTO limiteNovo) throws Exception {
+		if (limiteNovo.getCreditCardToken() != null) {
+			String creditCardToken = limiteNovo.getCreditCardToken();
+			limiteNovo.setCreditCardToken(Crypto.sha512(creditCardToken));
+		}
+		if (limiteNovo.getUserDocument() != null) {
+			String userDocument = limiteNovo.getUserDocument();
+			limiteNovo.setUserDocument(Crypto.sha512(userDocument));
+		}
 	}
 
 	@Override
@@ -47,9 +67,10 @@ public class LimitesServiceImpl implements LimitesService {
 	}
 
 	@Override
-	public LimiteResponseDTO updateLimite(Long id, LimiteRequestDTO request) {
+	public LimiteResponseDTO updateLimite(Long id, LimiteRequestDTO request) throws Exception {
 		Optional<LimiteRequestDTO> requestRecebida = Optional.of(request);
 		LimiteRequestDTO objetoRecedibo = requestRecebida.get();
+		encriptografarDadosLimiteRequestDTO(objetoRecedibo);
 		Optional<Limite> idProcurado = Optional.of(findLimiteById(id));
 		if (requestRecebida.isPresent()) {
 			Limite objetoLimite = idProcurado.get();

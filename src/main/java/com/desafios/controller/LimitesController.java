@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desafios.model.dto.request.LimiteRequestDTO;
@@ -40,7 +39,7 @@ public class LimitesController {
 	}
 	
 	@PostMapping
-	public LimiteResponseDTO createLimite(@RequestBody LimiteRequestDTO request) {
+	public LimiteResponseDTO createLimite(@RequestBody LimiteRequestDTO request) throws Exception {
 		return service.createLimite(request);
 	}
 
@@ -48,7 +47,7 @@ public class LimitesController {
 	public LimiteResponseDTO updateLimite(
 			@PathVariable("id") Long id,
 			@RequestBody LimiteRequestDTO requestDTO
-			) {
+			) throws Exception {
 		return service.updateLimite(id, requestDTO);
 	}
 	
@@ -57,4 +56,9 @@ public class LimitesController {
 		service.deleteLimite(id);
 	}
 
+	@DeleteMapping("/{id}")
+	public String deleteLimite(@PathVariable Long id) {
+		service.deleteLimite(id);
+		return "Deletado com sucesso";
+	}
 }
