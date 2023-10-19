@@ -12,9 +12,11 @@ public interface LimitesService {
 
 	Limite findLimiteById(Long id);
 	
-	LimiteResponseDTO createLimite(LimiteRequestDTO request);
+	LimiteResponseDTO createLimite(LimiteRequestDTO request) throws Exception;
 
 	List<LimiteResponseDTO> findAll();
 
-	LimiteResponseDTO updateLimite(Long id, LimiteRequestDTO request);
+	LimiteResponseDTO updateLimite(Long id, LimiteRequestDTO request) throws Exception;
+
+	void deleteLimite(Long id);
 }
