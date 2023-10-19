@@ -50,6 +50,11 @@ public class LimitesController {
 			) throws Exception {
 		return service.updateLimite(id, requestDTO);
 	}
+	
+	@DeleteMapping("/{id}")
+	public void deleteLimite(@PathVariable Long id) {
+		service.deleteLimite(id);
+	}
 
 	@DeleteMapping("/{id}")
 	public String deleteLimite(@PathVariable Long id) {
